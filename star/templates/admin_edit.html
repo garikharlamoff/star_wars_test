@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование — Star Wars Canon Lore</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div class="logo">STAR WARS <span>CANON LORE</span></div>
+            <div class="nav-links">
+                <div class="user-chip">
+                    <img src="/{{ user.avatar }}" alt="avatar" onerror="this.src='/static/avatars/default.png'">
+                    <span>{{ user.username }}</span>
+                    <span class="role-badge">{{ user.role }}</span>
+                </div>
+                <a href="/home" class="btn btn-sm">Главная</a>
+                <a href="/profile" class="btn btn-sm">Профиль</a>
+                <a href="/logout" class="btn btn-sm btn-danger">Выйти</a>
+            </div>
+        </div>
+
+        <h1 style="font-family:'Orbitron',sans-serif; color:var(--accent); margin-bottom:20px;">
+            Управление фракциями
+        </h1>
+
+        {% if factions %}
+        <div style="overflow-x:auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Символ</th>
+                        <th>Место</th>
+                        <th>Порядок</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in factions %}
+                    <tr>
+                        <td>{{ f.id }}</td>
+                        <td>{{ f.name }}</td>
+                        <td style="font-size:1.3rem;">{{ f.symbol }}</td>
+                        <td>{{ f.place[:40] }}{% if f.place|length > 40 %}…{% endif %}</td>
+                        <td>{{ f.order }}</td>
+                        <td>
+                            <button class="btn btn-sm" onclick="toggleEdit('{{ f.id }}')">✏️</button>
+                            <form method="post" action="/admin/edit/delete/{{ f.id }}" style="display:inline;"
+                                  onsubmit="return confirm('Удалить фракцию «{{ f.name }}»?');">
+                                <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr id="edit-row-{{ f.id }}" style="display:none;">
+                        <td colspan="6">
+                            <form method="post" action="/admin/edit/update/{{ f.id }}" enctype="multipart/form-data"
+                                  style="padding:16px; background:rgba(0,0,0,0.25); border-radius:6px;">
+                                <div class="form-grid">
+                                    <div>
+                                        <label>Название</label>
+                                        <input type="text" name="name" value="{{ f.name }}" required>
+                                    </div>
+                                    <div>
+                                        <label>Символ (emoji)</label>
+                                        <input type="text" name="symbol" value="{{ f.symbol }}">
+                                    </div>
+                                    <div>
+                                        <label>Титульное место</label>
+                                        <input type="text" name="place" value="{{ f.place }}">
+                                    </div>
+                                    <div>
+                                        <label>Порядок</label>
+                                        <input type="number" name="order" value="{{ f.order }}">
+                                    </div>
+                                    <div class="full">
+                                        <label>Главные персонажи</label>
+                                        <input type="text" name="characters" value="{{ f.characters }}">
+                                    </div>
+                                    <div class="full">
+                                        <label>Сильные стороны</label>
+                                        <textarea name="strengths">{{ f.strengths }}</textarea>
+                                    </div>
+                                    <div class="full">
+                                        <label>Слабые стороны</label>
+                                        <textarea name="weaknesses">{{ f.weaknesses }}</textarea>
+                                    </div>
+                                    <div class="full">
+                                        <label>Роль и место</label>
+                                        <textarea name="role">{{ f.role }}</textarea>
+                                    </div>
+                                    <div class="full">
+                                        <label>Изображение (заменить)</label>
+                                        <input type="file" name="image" accept="image/*">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn" style="margin-top:8px;">Сохранить</button>
+                                <button type="button" class="btn btn-sm" style="margin-left:8px;"
+                                        onclick="toggleEdit('{{ f.id }}')">Отмена</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="opacity:0.7;">Фракций пока нет.</p>
+        {% endif %}
+
+        <!-- Add form -->
+        <div class="form-section">
+            <h2>+ Добавить фракцию</h2>
+            <form method="post" action="/admin/edit/add" enctype="multipart/form-data">
+                <div class="form-grid">
+                    <div>
+                        <label>Название *</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div>
+                        <label>Символ (emoji)</label>
+                        <input type="text" name="symbol" placeholder="⭐">
+                    </div>
+                    <div>
+                        <label>Титульное место</label>
+                        <input type="text" name="place" placeholder="Корусант">
+                    </div>
+                    <div>
+                        <label>Порядок сортировки</label>
+                        <input type="number" name="order" value="99">
+                    </div>
+                    <div class="full">
+                        <label>Главные персонажи</label>
+                        <input type="text" name="characters" placeholder="Имя1, Имя2, ...">
+                    </div>
+                    <div class="full">
+                        <label>Сильные стороны</label>
+                        <textarea name="strengths"></textarea>
+                    </div>
+                    <div class="full">
+                        <label>Слабые стороны</label>
+                        <textarea name="weaknesses"></textarea>
+                    </div>
+                    <div class="full">
+                        <label>Роль и место в произведении</label>
+                        <textarea name="role"></textarea>
+                    </div>
+                    <div class="full">
+                        <label>Изображение</label>
+                        <input type="file" name="image" accept="image/*">
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="margin-top:12px;">Добавить</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    function toggleEdit(id) {
+        const row = document.getElementById('edit-row-' + id);
+        if (row) {
+            row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+        }
+    }
+    </script>
+</body>
+</html>

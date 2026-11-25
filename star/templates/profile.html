@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль — Star Wars Canon Lore</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div class="logo">STAR WARS <span>CANON LORE</span></div>
+            <div class="nav-links">
+                <a href="/home" class="btn btn-sm">Главная</a>
+                {% if user.role == 'admin' %}
+                <a href="/admin/edit" class="btn btn-sm">Редактировать</a>
+                {% endif %}
+                <a href="/logout" class="btn btn-sm btn-danger">Выйти</a>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <img src="/{{ user.avatar }}" alt="avatar" onerror="this.src='/static/avatars/default.png'">
+            <h2>{{ user.username }}</h2>
+            <p style="margin-bottom:16px;">
+                <span class="role-badge">{{ user.role }}</span>
+            </p>
+            <p style="opacity:0.7; font-size:0.9rem; line-height:1.6;">
+                {% if user.role == 'admin' %}
+                Вы можете просматривать и редактировать все данные сайта.
+                {% else %}
+                Вы можете просматривать главную страницу и свой профиль.
+                Изменение контента недоступно.
+                {% endif %}
+            </p>
+            <p style="margin-top:24px; opacity:0.5; font-size:0.8rem;">
+                Сессия истекает через 5 минут бездействия
+            </p>
+        </div>
+    </div>
+</body>
+</html>

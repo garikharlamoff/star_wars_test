@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — Star Wars Canon Lore</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div style="text-align:center; margin-bottom:24px;">
+            <div class="logo" style="font-size:1.6rem;">STAR WARS</div>
+            <div style="opacity:0.6; font-size:0.85rem; letter-spacing:2px; margin-top:4px;">CANON LORE</div>
+        </div>
+
+        <h2 style="text-align:center; margin-bottom:20px; font-family:'Orbitron',sans-serif; color:var(--accent);">Вход</h2>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="/login">
+            <label>Логин</label>
+            <input type="text" name="username" required autofocus placeholder="username">
+
+            <label>Пароль</label>
+            <input type="password" name="password" required placeholder="••••••••">
+
+            <button type="submit" class="btn" style="width:100%; margin-top:8px;">Войти</button>
+        </form>
+
+        <p style="text-align:center; margin-top:22px; font-size:0.9rem; opacity:0.75;">
+            Нет аккаунта? <a href="/register" style="color:var(--accent);">Регистрация</a>
+        </p>
+    </div>
+</body>
+</html>
